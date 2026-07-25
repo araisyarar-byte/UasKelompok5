@@ -1,0 +1,40 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>{% block title %}HireFlow{% endblock %}</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+  <link rel="stylesheet" href="{% static 'hireflow/css/pelamar.css' %}">
+</head>
+<body>
+  <div class="page-background">
+    <main class="app-shell">
+      <header class="topbar">
+        <a class="brand" href="{% url 'pelamar:daftar' %}">
+          <span class="brand-logo">H</span>
+          <span>HireFlow</span>
+        </a>
+        <div class="topbar-actions">
+          <span class="secure-label"><i data-lucide="shield-check"></i> Pendaftaran aman</span>
+          <a class="secondary-button" href="{% url 'admin:index' %}"><i data-lucide="lock-keyhole"></i> Admin</a>
+        </div>
+      </header>
+      {% if messages %}
+        <div class="message-stack">
+          {% for message in messages %}
+            <div class="alert success">{{ message }}</div>
+          {% endfor %}
+        </div>
+      {% endif %}
+      {% block content %}{% endblock %}
+    </main>
+  </div>
+  <script src="{% static 'hireflow/js/pelamar.js' %}"></script>
+  <script>lucide.createIcons();</script>
+</body>
+</html>

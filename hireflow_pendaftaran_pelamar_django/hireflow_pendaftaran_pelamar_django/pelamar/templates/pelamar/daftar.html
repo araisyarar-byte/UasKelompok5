@@ -1,0 +1,83 @@
+{% extends 'base_public.html' %}
+{% block title %}Pendaftaran Pelamar - HireFlow{% endblock %}
+{% block content %}
+<section class="registration-layout">
+  <aside class="registration-aside">
+    <span class="hero-badge">Portal Kandidat</span>
+    <h1>Mulai langkah kariermu bersama HireFlow.</h1>
+    <p>Buat akun pelamar, lengkapi identitas, lalu unggah CV dan ijazah melalui satu formulir.</p>
+
+    <div class="step-list">
+      <article class="step-item active"><span>1</span><div><strong>Data Akun</strong><small>Email dan kata sandi</small></div></article>
+      <article class="step-item"><span>2</span><div><strong>Identitas</strong><small>NIK dan pendidikan</small></div></article>
+      <article class="step-item"><span>3</span><div><strong>Unggah Berkas</strong><small>CV dan ijazah</small></div></article>
+    </div>
+
+    <div class="aside-note"><i data-lucide="info"></i><p>CV dan ijazah masing-masing maksimal 2 MB.</p></div>
+  </aside>
+
+  <section class="form-panel">
+    <div class="form-heading">
+      <div><span class="section-kicker">Form Registrasi</span><h2>Pendaftaran Pelamar</h2><p>Kolom bertanda <b>*</b> wajib diisi.</p></div>
+      <div class="progress-badge"><span id="progressText">0%</span><small>Lengkap</small></div>
+    </div>
+    <div class="progress-track"><span id="progressBar"></span></div>
+
+    {% if form.non_field_errors %}
+      <div class="alert error">{{ form.non_field_errors }}</div>
+    {% endif %}
+
+    <form method="post" enctype="multipart/form-data" id="registrationForm" novalidate>
+      {% csrf_token %}
+
+      <section class="form-section">
+        <div class="form-section-header"><span class="section-icon"><i data-lucide="user-round-plus"></i></span><div><h3>Data Akun</h3><p>Informasi untuk akun pelamar.</p></div></div>
+        <div class="form-grid">
+          {% include 'pelamar/field.html' with field=form.nama_lengkap full=True %}
+          {% include 'pelamar/field.html' with field=form.email %}
+          {% include 'pelamar/field.html' with field=form.nomor_hp %}
+          {% include 'pelamar/field.html' with field=form.password1 %}
+          {% include 'pelamar/field.html' with field=form.password2 %}
+        </div>
+      </section>
+
+      <section class="form-section">
+        <div class="form-section-header"><span class="section-icon"><i data-lucide="contact-round"></i></span><div><h3>Identitas Pelamar</h3><p>Data untuk proses pemeriksaan administrasi.</p></div></div>
+        <div class="form-grid">
+          {% include 'pelamar/field.html' with field=form.nik %}
+          {% include 'pelamar/field.html' with field=form.jenis_kelamin %}
+          {% include 'pelamar/field.html' with field=form.pendidikan_terakhir %}
+          {% include 'pelamar/field.html' with field=form.jurusan %}
+          {% include 'pelamar/field.html' with field=form.alamat full=True %}
+        </div>
+      </section>
+
+      <section class="form-section">
+        <div class="form-section-header"><span class="section-icon"><i data-lucide="file-up"></i></span><div><h3>Unggah Berkas</h3><p>Pastikan dokumen dapat dibaca dengan jelas.</p></div></div>
+        <div class="upload-grid">
+          <div class="upload-card {% if form.cv.errors %}invalid{% endif %}" data-upload-card>
+            {{ form.cv }}
+            <label for="{{ form.cv.id_for_label }}" class="upload-dropzone"><span class="upload-icon"><i data-lucide="file-user"></i></span><strong>Unggah CV *</strong><p>PDF, DOC, atau DOCX</p><small>Maksimal 2 MB</small><span class="choose-file">Pilih File</span></label>
+            <div class="file-preview" hidden><i data-lucide="file-check-2"></i><div><strong class="file-name"></strong><span class="file-size"></span></div></div>
+            {% for error in form.cv.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+          </div>
+          <div class="upload-card {% if form.ijazah.errors %}invalid{% endif %}" data-upload-card>
+            {{ form.ijazah }}
+            <label for="{{ form.ijazah.id_for_label }}" class="upload-dropzone"><span class="upload-icon"><i data-lucide="graduation-cap"></i></span><strong>Unggah Ijazah *</strong><p>PDF, JPG, JPEG, atau PNG</p><small>Maksimal 2 MB</small><span class="choose-file">Pilih File</span></label>
+            <div class="file-preview" hidden><i data-lucide="file-check-2"></i><div><strong class="file-name"></strong><span class="file-size"></span></div></div>
+            {% for error in form.ijazah.errors %}<small class="field-error">{{ error }}</small>{% endfor %}
+          </div>
+        </div>
+      </section>
+
+      <label class="agreement {% if form.persetujuan.errors %}invalid{% endif %}">{{ form.persetujuan }}<span>{{ form.persetujuan.label }}</span></label>
+      {% for error in form.persetujuan.errors %}<small class="field-error agreement-error">{{ error }}</small>{% endfor %}
+
+      <div class="form-actions">
+        <button type="reset" class="secondary-button"><i data-lucide="rotate-ccw"></i> Reset Form</button>
+        <button type="submit" class="primary-button"><i data-lucide="send"></i> Kirim Pendaftaran</button>
+      </div>
+    </form>
+  </section>
+</section>
+{% endblock %}

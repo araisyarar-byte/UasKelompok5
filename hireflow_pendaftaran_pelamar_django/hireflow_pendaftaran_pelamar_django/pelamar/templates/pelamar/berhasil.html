@@ -1,0 +1,17 @@
+{% extends 'base_public.html' %}
+{% block title %}Pendaftaran Berhasil - HireFlow{% endblock %}
+{% block content %}
+<section class="success-page">
+  <div class="success-card">
+    <span class="success-icon"><i data-lucide="circle-check-big"></i></span>
+    <span class="section-kicker">Pendaftaran Selesai</span>
+    <h1>Data pelamar berhasil disimpan.</h1>
+    <p>Akun, identitas, CV, dan ijazah sudah masuk ke sistem HireFlow.</p>
+    <div class="registration-code"><span>Nomor Pendaftaran</span><strong>{{ kode_pendaftaran }}</strong></div>
+    <div class="success-actions">
+      <a class="secondary-button" href="{% url 'pelamar:daftar' %}"><i data-lucide="user-round-plus"></i> Pendaftaran Baru</a>
+      <a class="primary-button" href="{% url 'admin:index' %}"><i data-lucide="layout-dashboard"></i> Buka Administration</a>
+    </div>
+  </div>
+</section>
+{% endblock %}

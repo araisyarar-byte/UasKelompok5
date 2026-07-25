@@ -1,0 +1,195 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Lowongan Kerja - HireFlow</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://unpkg.com/lucide@0.468.0/dist/umd/lucide.min.js"></script>
+  <link rel="stylesheet" href="{% static 'hireflow/css/style.css' %}">
+</head>
+<body class="public-body">
+  <div class="public-page">
+    <header class="public-navbar">
+      <div class="public-navbar-inner">
+        <a class="brand" href="{% url 'lowongan:daftar_lowongan' %}">
+          <div class="brand-logo">H</div>
+          <span>HireFlow</span>
+        </a>
+
+        <nav aria-label="Navigasi utama">
+          <a class="active" href="#lowongan">Lowongan</a>
+          <a href="#tentang">Tentang</a>
+          <a class="public-login-button" href="{% url 'login' %}">
+            <i data-lucide="log-in"></i>
+            <span>Login Admin</span>
+          </a>
+        </nav>
+      </div>
+    </header>
+
+    <main>
+      <section class="public-hero">
+        <div class="public-hero-copy">
+          <span class="hero-badge">Portal Rekrutmen HireFlow</span>
+          <h1>Temukan pekerjaan yang sesuai dengan kemampuanmu.</h1>
+          <p>
+            Lihat lowongan terbaru, pelajari kualifikasinya, dan pilih posisi
+            yang paling sesuai dengan rencana kariermu.
+          </p>
+
+          <div class="public-hero-actions">
+            <a class="hero-button" href="#lowongan">
+              Lihat Lowongan
+              <i data-lucide="arrow-down"></i>
+            </a>
+            <a class="public-outline-button" href="#tentang">Tentang HireFlow</a>
+          </div>
+
+          <div class="public-hero-summary">
+            <div>
+              <strong>{{ daftar_lowongan|length }}</strong>
+              <span>Lowongan aktif</span>
+            </div>
+            <div>
+              <strong>Mudah</strong>
+              <span>Informasi terpusat</span>
+            </div>
+            <div>
+              <strong>Cepat</strong>
+              <span>Akses kapan saja</span>
+            </div>
+          </div>
+        </div>
+
+        <div class="public-hero-art" aria-hidden="true">
+          <div class="public-art-glow"></div>
+          <div class="public-art-card card-a">
+            <i data-lucide="briefcase-business"></i>
+            <span>Lowongan Aktif</span>
+            <strong>{{ daftar_lowongan|length }}</strong>
+          </div>
+          <div class="public-art-card card-b">
+            <i data-lucide="building-2"></i>
+            <span>Sistem</span>
+            <strong>Terintegrasi</strong>
+          </div>
+          <div class="public-person">
+            <div class="public-head"></div>
+            <div class="public-body-shape"></div>
+            <div class="public-laptop"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="public-jobs-section" id="lowongan">
+        <div class="public-section-heading">
+          <div>
+            <span class="page-kicker">Peluang Karier</span>
+            <h2>Lowongan Tersedia</h2>
+            <p>Pilih posisi yang paling sesuai dengan minat dan kemampuanmu.</p>
+          </div>
+          <div class="public-job-count">
+            <i data-lucide="briefcase-business"></i>
+            <strong>{{ daftar_lowongan|length }}</strong>
+            <span>lowongan aktif</span>
+          </div>
+        </div>
+
+        <div class="public-job-grid">
+          {% for lowongan in daftar_lowongan %}
+            <article class="public-job-card">
+              <div class="public-job-card-top">
+                <div class="company-mark">{{ lowongan.perusahaan|slice:":1"|upper }}</div>
+                <span class="status-pill aktif">Aktif</span>
+              </div>
+
+              <h3>{{ lowongan.judul }}</h3>
+              <p class="public-company">{{ lowongan.perusahaan }}</p>
+
+              <div class="public-job-meta">
+                <span><i data-lucide="map-pin"></i>{{ lowongan.lokasi }}</span>
+                <span><i data-lucide="clock-3"></i>{{ lowongan.get_tipe_pekerjaan_display }}</span>
+              </div>
+
+              <p class="public-description">{{ lowongan.deskripsi|truncatewords:26 }}</p>
+
+              {% if lowongan.kualifikasi %}
+                <div class="qualification-preview">
+                  <strong>Kualifikasi singkat</strong>
+                  <p>{{ lowongan.kualifikasi|truncatewords:18 }}</p>
+                </div>
+              {% endif %}
+
+              <div class="public-job-footer">
+                <span>
+                  <i data-lucide="calendar-clock"></i>
+                  {% if lowongan.batas_lamaran %}
+                    Batas {{ lowongan.batas_lamaran|date:"d M Y" }}
+                  {% else %}
+                    Tanpa batas waktu
+                  {% endif %}
+                </span>
+                <button type="button" class="public-detail-button" data-job-title="{{ lowongan.judul|escapejs }}">
+                  Lihat Detail
+                  <i data-lucide="arrow-right"></i>
+                </button>
+              </div>
+            </article>
+          {% empty %}
+            <div class="public-empty">
+              <i data-lucide="folder-search-2"></i>
+              <h3>Belum ada lowongan tersedia</h3>
+              <p>Administrator dapat menambahkan lowongan melalui Dashboard HireFlow.</p>
+              <a class="primary-button" href="{% url 'login' %}">Masuk sebagai Admin</a>
+            </div>
+          {% endfor %}
+        </div>
+      </section>
+
+      <section class="public-about" id="tentang">
+        <div>
+          <span class="page-kicker">Tentang HireFlow</span>
+          <h2>Pengelolaan rekrutmen dalam satu sistem.</h2>
+        </div>
+        <p>
+          HireFlow membantu administrator mengelola publikasi lowongan melalui
+          Django, sedangkan calon pelamar dapat melihat posisi yang aktif dari
+          halaman publik ini.
+        </p>
+      </section>
+    </main>
+
+    <footer class="public-footer">
+      <a class="brand" href="{% url 'lowongan:daftar_lowongan' %}">
+        <div class="brand-logo">H</div>
+        <span>HireFlow</span>
+      </a>
+      <p>© {% now "Y" %} HireFlow. Sistem Rekrutmen Django.</p>
+    </footer>
+  </div>
+
+  <div class="public-toast" id="publicToast">
+    <i data-lucide="info"></i>
+    <span>Detail lowongan tersedia.</span>
+  </div>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      if (window.lucide) lucide.createIcons();
+      const toast = document.getElementById('publicToast');
+
+      document.querySelectorAll('.public-detail-button').forEach((button) => {
+        button.addEventListener('click', () => {
+          toast.querySelector('span').textContent = `Detail “${button.dataset.jobTitle}” dapat dikembangkan pada modul pendaftaran pelamar.`;
+          toast.classList.add('show');
+          window.setTimeout(() => toast.classList.remove('show'), 3500);
+        });
+      });
+    });
+  </script>
+</body>
+</html>

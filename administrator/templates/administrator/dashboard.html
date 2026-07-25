@@ -1,0 +1,127 @@
+{% extends 'base_admin.html' %}
+{% block title %}Dashboard Admin - HireFlow{% endblock %}
+{% block nav_dashboard %}active{% endblock %}
+
+{% block content %}
+<div class="dashboard-home-layout">
+  <section class="dashboard-home-main">
+    <section class="dashboard-welcome">
+      <div class="welcome-copy">
+        <span class="hero-badge">Ringkasan Rekrutmen</span>
+        <h1>Selamat datang, {{ request.user.username }} 👋</h1>
+        <p>Pantau publikasi lowongan dan kelola data rekrutmen dari satu dashboard yang rapi.</p>
+        <div class="welcome-actions">
+          <a class="hero-button" href="{% url 'administrator:kelola_lowongan' %}">
+            Kelola Lowongan <i data-lucide="arrow-right"></i>
+          </a>
+          <a class="welcome-secondary" href="{% url 'administrator:tambah_lowongan' %}">
+            <i data-lucide="plus"></i> Tambah Lowongan
+          </a>
+        </div>
+      </div>
+      <div class="welcome-visual" aria-hidden="true">
+        <div class="visual-ring ring-one"></div>
+        <div class="visual-ring ring-two"></div>
+        <div class="visual-card visual-card-one">
+          <i data-lucide="briefcase-business"></i><span>Total Lowongan</span><strong>{{ jumlah_lowongan }}</strong>
+        </div>
+        <div class="visual-card visual-card-two">
+          <i data-lucide="circle-check-big"></i><span>Lowongan Aktif</span><strong>{{ jumlah_aktif }}</strong>
+        </div>
+      </div>
+    </section>
+
+    <section class="stats-grid dashboard-stats">
+      <article class="stat-card">
+        <div class="stat-icon purple"><i data-lucide="briefcase-business"></i></div>
+        <div><span>Total Lowongan</span><strong>{{ jumlah_lowongan }}</strong><small>Seluruh data tersimpan</small></div>
+      </article>
+      <article class="stat-card">
+        <div class="stat-icon cyan"><i data-lucide="circle-check-big"></i></div>
+        <div><span>Lowongan Aktif</span><strong>{{ jumlah_aktif }}</strong><small class="positive">Tampil di halaman publik</small></div>
+      </article>
+      <article class="stat-card">
+        <div class="stat-icon red"><i data-lucide="archive-x"></i></div>
+        <div><span>Lowongan Nonaktif</span><strong>{{ jumlah_nonaktif }}</strong><small>Tidak dipublikasikan</small></div>
+      </article>
+      <article class="stat-card">
+        <div class="stat-icon yellow"><i data-lucide="database"></i></div>
+        <div><span>Database</span><strong>SQLite</strong><small>Terhubung ke Django</small></div>
+      </article>
+    </section>
+
+    <div class="dashboard-middle-grid">
+      <section class="dashboard-card progress-card">
+        <div class="dashboard-card-header">
+          <div><h2>Status Publikasi</h2><p>Perbandingan lowongan aktif dan nonaktif.</p></div>
+        </div>
+        <div class="status-overview">
+          <div class="status-donut" style="--active: {% if jumlah_lowongan %}{% widthratio jumlah_aktif jumlah_lowongan 100 %}{% else %}0{% endif %}%">
+            <div><strong>{{ jumlah_aktif }}</strong><span>Aktif</span></div>
+          </div>
+          <div class="status-breakdown">
+            <div><span><i class="legend-dot purple-dot"></i> Aktif</span><strong>{{ jumlah_aktif }}</strong></div>
+            <div><span><i class="legend-dot red-dot"></i> Nonaktif</span><strong>{{ jumlah_nonaktif }}</strong></div>
+            <div><span><i class="legend-dot cyan-dot"></i> Total</span><strong>{{ jumlah_lowongan }}</strong></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="dashboard-card quick-actions-card">
+        <div class="dashboard-card-header"><div><h2>Aksi Cepat</h2><p>Akses fitur yang paling sering digunakan.</p></div></div>
+        <div class="quick-actions-grid">
+          <a href="{% url 'administrator:tambah_lowongan' %}" class="quick-action">
+            <div class="quick-action-icon purple"><i data-lucide="plus"></i></div>
+            <div><strong>Tambah Lowongan</strong><span>Buat publikasi pekerjaan baru</span></div><i data-lucide="chevron-right"></i>
+          </a>
+          <a href="{% url 'administrator:kelola_lowongan' %}" class="quick-action">
+            <div class="quick-action-icon cyan"><i data-lucide="briefcase-business"></i></div>
+            <div><strong>Kelola Lowongan</strong><span>Edit, cari, dan hapus data</span></div><i data-lucide="chevron-right"></i>
+          </a>
+          <a href="{% url 'lowongan:daftar_lowongan' %}" target="_blank" class="quick-action">
+            <div class="quick-action-icon yellow"><i data-lucide="external-link"></i></div>
+            <div><strong>Lihat Halaman Publik</strong><span>Pratinjau lowongan untuk pelamar</span></div><i data-lucide="chevron-right"></i>
+          </a>
+        </div>
+      </section>
+    </div>
+
+    <section class="dashboard-card recent-jobs-card">
+      <div class="dashboard-card-header">
+        <div><h2>Lowongan Terbaru</h2><p>Data lowongan yang terakhir dibuat atau diperbarui.</p></div>
+        <a class="text-link" href="{% url 'administrator:kelola_lowongan' %}">Lihat semua <i data-lucide="arrow-right"></i></a>
+      </div>
+      <div class="recent-job-list">
+        {% for lowongan in lowongan_terbaru %}
+          <a class="recent-job-item" href="{% url 'administrator:edit_lowongan' lowongan.pk %}">
+            <div class="recent-job-icon"><i data-lucide="briefcase-business"></i></div>
+            <div class="recent-job-main"><strong>{{ lowongan.judul }}</strong><span>{{ lowongan.perusahaan }} · {{ lowongan.lokasi }}</span></div>
+            <span class="status-pill {% if lowongan.status_aktif %}aktif{% else %}nonaktif{% endif %}">{% if lowongan.status_aktif %}Aktif{% else %}Nonaktif{% endif %}</span>
+            <span class="recent-job-date">{{ lowongan.diperbarui_pada|date:"d M Y" }}</span>
+            <i class="recent-job-arrow" data-lucide="chevron-right"></i>
+          </a>
+        {% empty %}
+          <div class="dashboard-empty"><i data-lucide="briefcase-business"></i><p>Belum ada lowongan. Tambahkan lowongan pertama dari tombol di atas.</p></div>
+        {% endfor %}
+      </div>
+    </section>
+  </section>
+
+  <aside class="right-panel dashboard-right-panel">
+    <section class="side-card">
+      <div class="side-title"><h3>Hari Ini</h3><i data-lucide="calendar-days"></i></div>
+      <div class="today-date"><strong>{% now "d" %}</strong><div><span>{% now "l" %}</span><small>{% now "F Y" %}</small></div></div>
+      <div class="schedule-list">
+        <div class="schedule-item"><span class="schedule-time">08:00</span><i class="schedule-line purple-line"></i><div><strong>Periksa lowongan aktif</strong><small>Pastikan batas lamaran masih berlaku</small></div></div>
+        <div class="schedule-item"><span class="schedule-time">13:00</span><i class="schedule-line cyan-line"></i><div><strong>Perbarui publikasi</strong><small>Edit informasi yang diperlukan</small></div></div>
+        <div class="schedule-item"><span class="schedule-time">16:00</span><i class="schedule-line yellow-line"></i><div><strong>Rekap data harian</strong><small>Cek jumlah lowongan terbaru</small></div></div>
+      </div>
+    </section>
+    <section class="side-card target-card">
+      <div class="side-title"><h3>Kelengkapan Modul</h3><i data-lucide="target"></i></div>
+      <div class="target-progress"><div class="target-circle"><strong>100%</strong><span>Lowongan siap</span></div></div>
+      <p>Modul publikasi lowongan sudah terhubung ke database dan Django Admin.</p>
+    </section>
+  </aside>
+</div>
+{% endblock %}

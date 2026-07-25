@@ -1,0 +1,42 @@
+{% extends 'base_admin.html' %}
+{% block title %}{{ judul_halaman }} - HireFlow{% endblock %}
+{% block nav_lowongan %}active{% endblock %}
+{% block topbar_search %}<div class="topbar-page-label"><i data-lucide="file-pen-line"></i><span>{{ judul_halaman }}</span></div>{% endblock %}
+{% block topbar_action %}{% endblock %}
+
+{% block content %}
+<section class="form-page-shell">
+  <div class="form-page-header">
+    <div><span class="page-kicker">Manajemen Lowongan</span><h1>{{ judul_halaman }}</h1><p>{{ subjudul_halaman }}</p></div>
+    <a class="secondary-button" href="{% url 'administrator:kelola_lowongan' %}"><i data-lucide="arrow-left"></i> Kembali</a>
+  </div>
+
+  <div class="hireflow-form-card">
+    <form method="post" novalidate>
+      {% csrf_token %}
+      {% if form.non_field_errors %}<div class="form-error-banner">{{ form.non_field_errors }}</div>{% endif %}
+      <div class="form-grid">
+        {% for field in form %}
+          <div class="form-field {% if field.name == 'deskripsi' or field.name == 'kualifikasi' or field.name == 'status_aktif' %}full-width{% endif %}">
+            {% if field.name == 'status_aktif' %}
+              <label class="switch-row" for="{{ field.id_for_label }}">
+                {{ field }}
+                <span class="switch-copy"><strong>Publikasikan lowongan</strong><small>Jika aktif, lowongan akan tampil di halaman publik.</small></span>
+              </label>
+            {% else %}
+              <label for="{{ field.id_for_label }}">{{ field.label }}{% if field.field.required %}<span class="required">*</span>{% endif %}</label>
+              {{ field }}
+            {% endif %}
+            {% if field.help_text %}<small class="field-help">{{ field.help_text }}</small>{% endif %}
+            {% for error in field.errors %}<p class="error-list">{{ error }}</p>{% endfor %}
+          </div>
+        {% endfor %}
+      </div>
+      <div class="form-actions">
+        <button class="primary-button" type="submit"><i data-lucide="save"></i> {{ teks_tombol }}</button>
+        <a class="secondary-button" href="{% url 'administrator:kelola_lowongan' %}">Batal</a>
+      </div>
+    </form>
+  </div>
+</section>
+{% endblock %}

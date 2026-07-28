@@ -1,0 +1,21 @@
+{% load static %}
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}HireFlow{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'pengumuman_laporan/css/style.css' %}">
+</head>
+<body class="public-body">
+  <nav class="public-nav">
+    <a class="brand" href="{% url 'pengumuman_laporan:beranda' %}"><span>H</span> HireFlow</a>
+    <div>
+      <a href="{% url 'pengumuman_laporan:cek_hasil' %}">Cek Hasil</a>
+      <a class="nav-button" href="{% url 'login' %}">Login Admin</a>
+    </div>
+  </nav>
+  <main>{% block content %}{% endblock %}</main>
+  <footer>© 2026 HireFlow · Sistem Rekrutmen</footer>
+</body>
+</html>

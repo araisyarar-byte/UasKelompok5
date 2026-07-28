@@ -1,0 +1,27 @@
+{% load static %}
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <title>Cetak Laporan Rekrutmen</title>
+  <link rel="stylesheet" href="{% static 'pengumuman_laporan/css/style.css' %}">
+</head>
+<body class="print-body">
+  <div class="print-actions"><button onclick="window.print()">Cetak / Simpan PDF</button></div>
+  <main class="print-sheet">
+    <header class="print-header"><div class="brand dark"><span>H</span> HireFlow</div><div><h1>Laporan Data Akhir Rekrutmen</h1><p>Dicetak {{ dicetak_pada|date:"d F Y, H:i" }} WIB</p></div></header>
+    <section class="print-summary">
+      <div><small>Total Data</small><strong>{{ ringkasan.total }}</strong></div>
+      <div><small>Diterima</small><strong>{{ ringkasan.diterima }}</strong></div>
+      <div><small>Belum Lolos</small><strong>{{ ringkasan.ditolak }}</strong></div>
+      <div><small>Dipublikasikan</small><strong>{{ ringkasan.dipublikasikan }}</strong></div>
+      <div><small>Rata-rata Nilai</small><strong>{% if ringkasan.rata_nilai %}{{ ringkasan.rata_nilai|floatformat:2 }}{% else %}—{% endif %}</strong></div>
+    </section>
+    <table class="print-table">
+      <thead><tr><th>No</th><th>Kode</th><th>Nama</th><th>Posisi</th><th>Tanggal</th><th>Status</th><th>Nilai</th><th>Publikasi</th></tr></thead>
+      <tbody>{% for item in hasil_list %}<tr><td>{{ forloop.counter }}</td><td>{{ item.kode_pendaftaran }}</td><td>{{ item.nama_pelamar }}</td><td>{{ item.posisi_dilamar }}</td><td>{{ item.tanggal_melamar|date:"d-m-Y" }}</td><td>{{ item.get_status_hasil_display }}</td><td>{% if item.nilai_akhir is not None %}{{ item.nilai_akhir }}{% else %}—{% endif %}</td><td>{% if item.dipublikasikan %}Ya{% else %}Tidak{% endif %}</td></tr>{% empty %}<tr><td colspan="8">Tidak ada data.</td></tr>{% endfor %}</tbody>
+    </table>
+    <div class="signature"><div><p>Mengetahui,</p><br><br><p>__________________________</p><small>Admin Rekrutmen</small></div></div>
+  </main>
+</body>
+</html>

@@ -1,0 +1,27 @@
+{% load static %}
+<!doctype html>
+<html lang="id">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}Admin HireFlow{% endblock %}</title>
+  <link rel="stylesheet" href="{% static 'pengumuman_laporan/css/style.css' %}">
+</head>
+<body class="admin-body">
+  <aside class="sidebar">
+    <a class="brand" href="{% url 'pengumuman_laporan:laporan' %}"><span>H</span> HireFlow</a>
+    <p class="nav-label">REKRUTMEN</p>
+    <a class="nav-active" href="{% url 'pengumuman_laporan:laporan' %}">Pengumuman & Laporan</a>
+    <a class="nav-link" href="{% url 'pengumuman_laporan:cek_hasil' %}" target="_blank">Halaman Pelamar ↗</a>
+    <a class="nav-link" href="/admin/pengumuman_laporan/hasilseleksi/">Kelola Pengumuman</a>
+    <div class="user-box">
+      <div class="avatar">{{ request.user.username|slice:":1"|upper }}</div>
+      <div><strong>{{ request.user.username }}</strong><small>Administrator</small></div>
+      <form action="{% url 'logout' %}" method="post">{% csrf_token %}<button>Keluar</button></form>
+    </div>
+  </aside>
+  <main class="admin-main">
+    {% block content %}{% endblock %}
+  </main>
+</body>
+</html>

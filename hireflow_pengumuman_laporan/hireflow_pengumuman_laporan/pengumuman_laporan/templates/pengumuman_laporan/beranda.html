@@ -1,0 +1,27 @@
+{% extends 'pengumuman_laporan/base_public.html' %}
+{% block title %}Pengumuman Rekrutmen | HireFlow{% endblock %}
+{% block content %}
+<section class="hero">
+  <div class="hero-copy">
+    <p class="eyebrow">PENGUMUMAN REKRUTMEN</p>
+    <h1>Lihat perkembangan proses seleksimu dengan mudah.</h1>
+    <p class="hero-text">Masukkan kode pendaftaran dan email yang digunakan saat melamar untuk melihat hasil seleksi resmi dari tim HireFlow.</p>
+    <a class="btn primary" href="{% url 'pengumuman_laporan:cek_hasil' %}">Cek Hasil Seleksi</a>
+  </div>
+  <div class="hero-card">
+    <div class="mini-icon">✓</div>
+    <h2>Pengumuman Aman</h2>
+    <p>Hasil hanya ditampilkan setelah diverifikasi menggunakan kode pendaftaran dan email terdaftar.</p>
+    <div class="steps">
+      <div><span>1</span><p><strong>Siapkan kode</strong><small>Kode pendaftaran dari formulir lamaran.</small></p></div>
+      <div><span>2</span><p><strong>Masukkan email</strong><small>Gunakan email yang sama saat mendaftar.</small></p></div>
+      <div><span>3</span><p><strong>Lihat hasil</strong><small>Baca status dan instruksi berikutnya.</small></p></div>
+    </div>
+  </div>
+</section>
+<section class="feature-strip">
+  <article><strong>Praktis</strong><span>Tidak perlu menghubungi admin satu per satu.</span></article>
+  <article><strong>Privat</strong><span>Hasil tidak ditampilkan dalam daftar publik.</span></article>
+  <article><strong>Terarah</strong><span>Tindak lanjut disampaikan bersama status seleksi.</span></article>
+</section>
+{% endblock %}

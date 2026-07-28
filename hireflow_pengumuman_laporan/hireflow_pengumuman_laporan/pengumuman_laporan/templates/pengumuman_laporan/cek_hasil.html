@@ -1,0 +1,57 @@
+{% extends 'pengumuman_laporan/base_public.html' %}
+{% block title %}Cek Hasil Seleksi | HireFlow{% endblock %}
+{% block content %}
+<section class="lookup-page">
+  <div class="lookup-intro">
+    <p class="eyebrow">HASIL SELEKSI</p>
+    <h1>Cek pengumuman lamaran</h1>
+    <p>Pastikan kode pendaftaran dan email sama persis dengan data yang digunakan saat mendaftar.</p>
+  </div>
+  <div class="lookup-grid">
+    <section class="card lookup-card">
+      <h2>Identitas Pelamar</h2>
+      <form method="post" novalidate>
+        {% csrf_token %}
+        <label for="{{ form.kode_pendaftaran.id_for_label }}">{{ form.kode_pendaftaran.label }}</label>
+        {{ form.kode_pendaftaran }}{{ form.kode_pendaftaran.errors }}
+        <label for="{{ form.email.id_for_label }}">{{ form.email.label }}</label>
+        {{ form.email }}{{ form.email.errors }}
+        <button class="btn primary full" type="submit">Lihat Pengumuman</button>
+      </form>
+      <p class="privacy-note">Data digunakan hanya untuk memverifikasi pengumuman seleksi.</p>
+    </section>
+
+    <section class="result-area">
+      {% if hasil %}
+        <article class="card result-card status-card-{{ hasil.status_hasil }}">
+          <div class="result-top">
+            <div><p class="eyebrow">{{ hasil.kode_pendaftaran }}</p><h2>{{ hasil.judul_pengumuman }}</h2></div>
+            <span class="badge status-{{ hasil.status_hasil }}">{{ hasil.get_status_hasil_display }}</span>
+          </div>
+          <div class="candidate-box">
+            <div><small>Nama Pelamar</small><strong>{{ hasil.nama_pelamar }}</strong></div>
+            <div><small>Posisi Dilamar</small><strong>{{ hasil.posisi_dilamar }}</strong></div>
+            <div><small>Tanggal Melamar</small><strong>{{ hasil.tanggal_melamar|date:"d F Y" }}</strong></div>
+            <div><small>Tanggal Pengumuman</small><strong>{{ hasil.tanggal_publikasi|date:"d F Y, H:i" }} WIB</strong></div>
+          </div>
+          <div class="announcement"><h3>Informasi</h3><p>{{ hasil.isi_pengumuman|linebreaksbr }}</p></div>
+          {% if hasil.tindak_lanjut %}<div class="next-step"><h3>Tindak Lanjut</h3><p>{{ hasil.tindak_lanjut|linebreaksbr }}</p></div>{% endif %}
+          <p class="official-note">Pengumuman ini diterbitkan melalui sistem HireFlow.</p>
+        </article>
+      {% elif sudah_dicari %}
+        <article class="card empty-result">
+          <div class="empty-icon">!</div>
+          <h2>Data pengumuman tidak ditemukan</h2>
+          <p>Periksa kembali kode pendaftaran dan email. Pengumuman juga mungkin belum dipublikasikan oleh admin.</p>
+        </article>
+      {% else %}
+        <article class="card empty-result initial">
+          <div class="empty-icon">⌕</div>
+          <h2>Hasil akan tampil di sini</h2>
+          <p>Lengkapi identitas pelamar pada formulir untuk membuka pengumuman seleksi.</p>
+        </article>
+      {% endif %}
+    </section>
+  </div>
+</section>
+{% endblock %}

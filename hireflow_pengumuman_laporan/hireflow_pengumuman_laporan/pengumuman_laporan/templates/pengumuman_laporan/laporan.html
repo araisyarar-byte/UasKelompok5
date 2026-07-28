@@ -1,0 +1,68 @@
+{% extends 'pengumuman_laporan/base_admin.html' %}
+{% block title %}Laporan Rekrutmen | HireFlow{% endblock %}
+{% block content %}
+<header class="admin-header">
+  <div><p class="eyebrow">ADMIN REKRUTMEN</p><h1>Rekapitulasi Rekrutmen</h1><p class="subtitle">Pantau hasil akhir seleksi dan siapkan laporan data rekrutmen.</p></div>
+  <div class="header-actions">
+    <a class="btn ghost" target="_blank" href="{% url 'pengumuman_laporan:cetak_laporan' %}?{{ request.GET.urlencode }}">Cetak Laporan</a>
+    <a class="btn primary" href="{% url 'pengumuman_laporan:ekspor_csv' %}?{{ request.GET.urlencode }}">Ekspor CSV</a>
+  </div>
+</header>
+
+<section class="stats admin-stats">
+  <article><span>Total Pelamar</span><strong>{{ jumlah_total }}</strong><small>{{ jumlah_dipublikasikan }} hasil dipublikasikan</small></article>
+  <article><span>Diterima</span><strong>{{ jumlah_diterima }}</strong><small>{{ tingkat_penerimaan }}% tingkat penerimaan</small></article>
+  <article><span>Belum Lolos</span><strong>{{ jumlah_ditolak }}</strong><small>Hasil akhir ditolak</small></article>
+  <article><span>Dalam Proses</span><strong>{{ jumlah_proses }}</strong><small>Administrasi hingga wawancara</small></article>
+</section>
+
+<section class="analytics-grid">
+  <article class="panel chart-panel">
+    <div class="section-title"><div><h2>Distribusi Status</h2><p>Komposisi seluruh hasil seleksi.</p></div></div>
+    <div class="bar-list">
+      {% for item in status_rekap %}
+      <div class="bar-item"><div class="bar-meta"><span>{{ item.label }}</span><strong>{{ item.jumlah }}</strong></div><div class="bar-track"><span style="width: {{ item.persen }}%"></span></div><small>{{ item.persen }}%</small></div>
+      {% empty %}<p class="muted">Belum ada data.</p>{% endfor %}
+    </div>
+  </article>
+  <article class="panel position-panel">
+    <div class="section-title"><div><h2>Rekap per Posisi</h2><p>Jumlah pelamar dan rata-rata nilai.</p></div></div>
+    <div class="position-list">
+      {% for item in posisi_rekap %}
+      <div><span><strong>{{ item.posisi_dilamar }}</strong><small>{{ item.jumlah }} pelamar</small></span><b>{% if item.rata_nilai %}{{ item.rata_nilai|floatformat:1 }}{% else %}—{% endif %}</b></div>
+      {% empty %}<p class="muted">Belum ada data.</p>{% endfor %}
+    </div>
+  </article>
+</section>
+
+<section class="panel report-panel">
+  <div class="section-title"><div><h2>Data Akhir Rekrutmen</h2><p>{{ jumlah_filter }} data sesuai filter.</p></div></div>
+  <form class="report-filters" method="get">
+    <input name="q" value="{{ q }}" placeholder="Cari kode, nama, atau email">
+    <select name="status"><option value="">Semua Status</option>{% for value,label in status_choices %}<option value="{{ value }}" {% if status_aktif == value %}selected{% endif %}>{{ label }}</option>{% endfor %}</select>
+    <select name="posisi"><option value="">Semua Posisi</option>{% for item in posisi_list %}<option value="{{ item }}" {% if posisi_aktif == item %}selected{% endif %}>{{ item }}</option>{% endfor %}</select>
+    <select name="publikasi"><option value="">Semua Publikasi</option><option value="ya" {% if publikasi_aktif == 'ya' %}selected{% endif %}>Sudah Dipublikasikan</option><option value="tidak" {% if publikasi_aktif == 'tidak' %}selected{% endif %}>Belum Dipublikasikan</option></select>
+    <input type="date" name="tanggal_awal" value="{{ tanggal_awal }}" title="Tanggal awal">
+    <input type="date" name="tanggal_akhir" value="{{ tanggal_akhir }}" title="Tanggal akhir">
+    <button class="btn primary">Terapkan</button>
+    <a class="btn ghost" href="{% url 'pengumuman_laporan:laporan' %}">Reset</a>
+  </form>
+  <div class="table-wrap">
+    <table>
+      <thead><tr><th>Pelamar</th><th>Posisi</th><th>Tanggal</th><th>Status</th><th>Nilai</th><th>Publikasi</th></tr></thead>
+      <tbody>
+      {% for item in hasil_list %}
+        <tr>
+          <td><strong>{{ item.nama_pelamar }}</strong><small>{{ item.kode_pendaftaran }} · {{ item.email }}</small></td>
+          <td>{{ item.posisi_dilamar }}</td>
+          <td>{{ item.tanggal_melamar|date:"d M Y" }}</td>
+          <td><span class="badge status-{{ item.status_hasil }}">{{ item.get_status_hasil_display }}</span></td>
+          <td>{% if item.nilai_akhir is not None %}{{ item.nilai_akhir }}{% else %}—{% endif %}</td>
+          <td>{% if item.dipublikasikan %}<span class="publish yes">Sudah</span><small>{{ item.tanggal_publikasi|date:"d M Y, H:i" }}</small>{% else %}<span class="publish no">Belum</span>{% endif %}</td>
+        </tr>
+      {% empty %}<tr><td class="empty" colspan="6">Belum ada data yang sesuai dengan filter.</td></tr>{% endfor %}
+      </tbody>
+    </table>
+  </div>
+</section>
+{% endblock %}
